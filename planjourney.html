@@ -24,6 +24,7 @@
     </div>
     <script type="text/javascript">
         $(document).bind('pageshow', function(){
+            alert($.mobile.activePage.attr("id"));
             if($.mobile.activePage.attr("id") == 'planjourney'){
                 app.planjourney.init();
             }
