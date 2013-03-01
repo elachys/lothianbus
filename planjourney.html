@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Plan Journey - Lothian buses</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+<body>
+
+<div data-role="page" class="lb lb-index">
+
+    <div data-role="header">
+      <a href="/" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+      <h1>Journey Planner</h1>
+      <a href="#" class="ui-btn-right" data-icon="" data-iconpos="notext"  data-ajax="false">Journey Time</a>
+    </div>
+    <div data-role="content">
+        <form action="#" method="get">
+            <input type="text" name="from" value="current location"  />
+            <input type="text" name="to" value=""  />
+        </form>
+        <div id="plan_map_canvas"></div>
+
+    </div>
+    <script type="text/javascript">
+        $(document).bind('pageshow', function(){
+            app.planjourney.init();
+        });
+    </script>
+</div>
+</body>
+</html>
