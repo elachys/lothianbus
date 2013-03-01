@@ -21,15 +21,20 @@ var app = {}
 
 
 app.location = {
-    listener: function(position){
+    update: function(position){
         user.position = position;
         user.lat = position.coords.latitude;
         user.lng = position.coords.longitude;
     },
+    listener: function(position){
+        app.location.update(position);
+        console.log(position);
+    }
 };
 
 if (navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(app.location.listener, app.location.failed, {enableHighAccuracy: true});
+    navigator.geolocation.getCurrentPosition(app.location.update, app.location.failed, {enableHighAccuracy: true});
+    navigator.geolocation.watchPosition(app.location.listener, app.location.failed, {enableHighAccuracy: true});
 } else {
     alert("Geolocation is not supported by this browser.");
 }
