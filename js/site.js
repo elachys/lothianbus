@@ -1,3 +1,7 @@
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 var alertFallback = true;
    if (typeof console === "undefined" || typeof console.log === "undefined") {
      console = {};
@@ -16,9 +20,20 @@ var user = {
     lng: null
 };
 
-var app = {}
+var app = {
+    validate: {
+        stopcode: function(code){
+            return (code.length == 8 && isNumber(code));
+        }
+    },
+    removePipes: function(data){
+        return data.value.items[0];
+    }
+}
 
-
+app.pipes = {
+    bustimes: 'http://pipes.yahoo.com/pipes/pipe.run?_id=84213487dd2976daa76c23c43764b21d&_render=json'
+}
 
 app.location = {
     update: function(position){
