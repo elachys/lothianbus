@@ -5,11 +5,7 @@ app.livebustimes = {
         app.livebustimes.loaded();
     },
     loaded: function(){
-        $('.search').live('keydown', function(e) {
-            app.livebustimes.displayError(e.type);
-        });
-            return;
-        $('.search').bind('change', function(){
+        $('.search').live('keyup', function(){
            app.livebustimes.displayError('key event fired');
             var val = $(this).val();
             if(app.validate.stopcode(val)){
