@@ -6,6 +6,7 @@ app.livebustimes = {
     },
     loaded: function(){
         $('input[name="search"]').bind('change, keyup, keypress', function(){
+           app.livebustimes.displayError('key event fired');
             var val = $(this).val();
             if(app.validate.stopcode(val)){
                 app.livebustimes.searchBusStop(val);
