@@ -5,6 +5,10 @@ app.livebustimes = {
         app.livebustimes.loaded();
     },
     loaded: function(){
+        $('.search').live('click mousedown mouseup focus keydown change blur', function(e) {
+            app.livebustimes.displayError(e.type);
+        });
+            return;
         $('.search').bind('change', function(){
            app.livebustimes.displayError('key event fired');
             var val = $(this).val();
