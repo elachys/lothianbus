@@ -12,13 +12,6 @@ app.maputils = {
             'icon': 'http://google-maps-icons.googlecode.com/files/sailboat-tourism.png' 
         });
 
-
-        $(selector).gmap('addMarker', {
-            'position': centerPosition,
-            'bounds': false,
-            'icon': 'http://google-maps-icons.googlecode.com/files/sailboat-tourism.png' 
-        });
-
         $(selector).gmap('addShape', 'Circle', {
             'strokeColor': "#0000FF",
             'strokeOpacity': 0.8,
@@ -32,15 +25,33 @@ app.maputils = {
     addStopMarkers: function(selector, stops){
         for(i in stops){
             var s = stops[i];
-            app.maputils.addStopMarker(selector, s.latitude, s.longitude, s.direction);
+            app.maputils.addStopMarker(selector, s);
         }
     },
-    addStopMarker: function(selector, lat, lng, direction){
-        var pos = new google.maps.LatLng(lat, lng);
+    stopInfoWindow: function(data){
+        function drawRow(t, service){
+            var td = $('<td />').text(service);
+            t.append($('<tr />').append(td));
+        }
+        var t = $('<table />');
+        if(typeof(data.service_list) == 'object'){
+            for(i in data.service_list){
+                drawRow(t, data.service_list[i]);
+            }
+        } else if(!isNaN(data.service_list) && data.service_list.length > 0) {
+            drawRow(t, data.service_list);
+        }
+        return t;
+    },
+    addStopMarker: function(selector, data){
+        var pos = new google.maps.LatLng(data.latitude, data.longitude);
         $(selector).gmap('addMarker', {
             position: pos,
             'bounds': false,
-            'icon': 'img/markers-small-' + direction.toUpperCase() + '.png'
+            'icon': 'img/markers-small-' + data.direction.toUpperCase() + '.png'
+        }).click(function(){
+
+            $(selector).gmap('openInfoWindow', { 'content': app.maputils.stopInfoWindow(data).prop('outerHTML') }, this);
         });
     }
 
