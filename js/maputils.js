@@ -28,12 +28,38 @@ app.maputils = {
             app.maputils.addStopMarker(selector, s);
         }
     },
-    stopInfoWindow: function(data){
-        function drawRow(t, service){
-            var td = $('<td />').text(service);
-            t.append($('<tr />').append(td));
+    fillLiveBuses: function(t, data){
+        var data = app.removePipes(data);
+        if(!data){
+            app.livebustimes.displayError('unable to get times');
+            return false;
         }
-        var t = $('<table />');
+
+        var services = data.services;
+        if(services == null){
+            console.log('no services');
+            return false;
+        }
+        if(services.service_name){
+            services = [services];
+        }
+        for(i in services){
+            var service = services[i];
+            var time = $('td.service-' + service.service_name).siblings('td.time');
+            $(time).text(service.times[0].time);
+        }
+
+    },
+    stopInfoWindow: function(data){
+        var wrapper = $('<div />').addClass('infowrapper');
+
+        $('<a href="favstops.html?add=' + data.stop_code + '&stopname=' + encodeURIComponent(data.stop_name) + '" data-role="button" data-iconpos="notext" data-icon="star">fav</a>').button().appendTo(wrapper);
+        function drawRow(t, service){
+            var td = $('<td />').addClass('service-' + service).text(service);
+            var time = $('<td />').addClass('time').text('-');
+            t.append($('<tr />').append(td).append(time));
+        }
+        var t = $('<table />').addClass('info-table');
         if(typeof(data.service_list) == 'object'){
             for(i in data.service_list){
                 drawRow(t, data.service_list[i]);
@@ -41,7 +67,10 @@ app.maputils = {
         } else if(!isNaN(data.service_list) && data.service_list.length > 0) {
             drawRow(t, data.service_list);
         }
-        return t;
+
+        app.livebustimes.byStop(data.stop_code, $.proxy(function(data) { app.maputils.fillLiveBuses(t, data); }));
+        wrapper.append(t);
+        return wrapper;
     },
     addStopMarker: function(selector, data){
         var pos = new google.maps.LatLng(data.latitude, data.longitude);

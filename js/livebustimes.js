@@ -25,6 +25,9 @@ app.livebustimes = {
 
         });
     },
+    byStop: function(code, callback){
+        $.getJSON(app.pipes.bustimes + "&stopcode=" + code + "&_callback=?", null, callback);
+    },
     searchBusStop: function(text){
         if(app.livebustimes.searchingFor == text){
             return false;
@@ -37,7 +40,7 @@ app.livebustimes = {
         app.livebustimes.clearTable();
         app.livebustimes.clearError();
         $.mobile.loading('show');
-        $.getJSON(app.pipes.bustimes + "&stopcode=" + code + "&_callback=?", null, function(data) {
+        app.livebustimes.byStop(code, function(data) {
 
             var data = app.removePipes(data);
             if(!data){

@@ -2,6 +2,12 @@ function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function qs(key) {
+    key = key.replace(/[*+?^$.\[\]{}()|\\\/]/g, "\\$&"); // escape RegEx meta chars
+    var match = location.search.match(new RegExp("[?&]"+key+"=([^&]+)(&|$)"));
+    return match && decodeURIComponent(match[1].replace(/\+/g, " "));
+}
+
 var alertFallback = true;
    if (typeof console === "undefined" || typeof console.log === "undefined") {
      console = {};
@@ -27,7 +33,10 @@ var app = {
         }
     },
     removePipes: function(data){
-        return data.value.items[0];
+        if(data.value && data.value.items && data.value.items[0]){
+            return data.value.items[0];
+        }
+        return data;
     }
 }
 
