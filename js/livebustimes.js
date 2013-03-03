@@ -1,4 +1,3 @@
-
 app.livebustimes = {
     searchingFor: null,
     init: function(){
@@ -6,11 +5,24 @@ app.livebustimes = {
     },
     loaded: function(){
         $('.search').live('keyup', function(){
-           app.livebustimes.displayError('key event fired');
             var val = $(this).val();
             if(app.validate.stopcode(val)){
                 app.livebustimes.searchBusStop(val);
             }
+        });
+        app.maputils.initFullScreenMap('#livebus_map_canvas').bind('init', function(ev, map) {
+            app.livebustimes.mapReady();
+        });
+
+    },
+    mapReady: function(){
+        app.maputils.addGpsMarker('#livebus_map_canvas');
+        $.getJSON(app.pipes.closestops + "&lat=" + user.lat + '&lng' + user.lng + "&_callback=?", null, function(data) {
+            var data = app.removePipes(data);
+            if(data){
+                app.maputils.addStopMarkers('#livebus_map_canvas', data.stops);
+            }
+
         });
     },
     searchBusStop: function(text){
@@ -24,7 +36,7 @@ app.livebustimes = {
     searchByCode: function(code){
         app.livebustimes.clearTable();
         app.livebustimes.clearError();
-
+        $.mobile.loading('show');
         $.getJSON(app.pipes.bustimes + "&stopcode=" + code + "&_callback=?", null, function(data) {
 
             var data = app.removePipes(data);
@@ -37,12 +49,15 @@ app.livebustimes = {
                 var service = data.services[i];
                 var tr = $('<tr />');
                 var serviceName = $('<td />').text(service.service_name);
-                var serviceDestination = $('<td />').text(service.times[0].destination).text(service.times[0].mins + ' mins');
+                var serviceDestination = $('<td />').text(service.times[0].destination);
+                var serviceTime = $('<td />').text(service.times[0].mins + ' mins');
+
                 tr.append(serviceName);
                 tr.append(serviceDestination);
+                tr.append(serviceTime);
                 table.append(tr);
             }
-
+            $.mobile.loading('hide');
         });
     },
     displayError: function(text){

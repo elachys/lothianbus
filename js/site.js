@@ -32,7 +32,8 @@ var app = {
 }
 
 app.pipes = {
-    bustimes: 'http://pipes.yahoo.com/pipes/pipe.run?_id=84213487dd2976daa76c23c43764b21d&_render=json'
+    bustimes: 'http://pipes.yahoo.com/pipes/pipe.run?_id=84213487dd2976daa76c23c43764b21d&_render=json',
+    closestops: 'http://pipes.yahoo.com/pipes/pipe.run?_id=334bada2b12f8878e90b72890f104978&_render=json'
 }
 
 app.location = {

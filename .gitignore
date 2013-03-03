@@ -1,0 +1,9 @@
+*.cache
+*.log
+*.tar
+*.zip
+*.tmp
+*.bak
+
+logs/*
+.DS_Store
