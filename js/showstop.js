@@ -9,6 +9,27 @@ app.showstop = {
     },
     fillLiveBuses: function(data){
         console.log(data);
+            var data = app.removePipes(data);
+            if(!data){
+                app.livebustimes.displayError('invalid stop code');
+                return false;
+            }
+            var table = $('#showstop_table tbody');
+            for(i in data.services){
+                var service = data.services[i];
+                var tr = $('<tr />');
+                var serviceName = $('<td />').text(service.service_name);
+                var serviceTime = $('<td />');
+                var serviceDestination = $('<td />');
+                if(service.times){
+                    serviceDestination.text(service.times[0].destination);
+                    serviceTime.text(service.times[0].mins + ' mins');
+                }
+                tr.append(serviceName);
+                tr.append(serviceDestination);
+                tr.append(serviceTime);
+                table.append(tr);
+            }
 
     },
     displayError: function(text){
