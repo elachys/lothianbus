@@ -8,28 +8,36 @@ app.showstop = {
         app.livebustimes.byStop(stop, app.showstop.fillLiveBuses);
     },
     fillLiveBuses: function(data){
-        console.log(data);
             var data = app.removePipes(data);
             if(!data){
                 app.livebustimes.displayError('invalid stop code');
                 return false;
             }
-            var table = $('#showstop_table tbody');
+            var container = $('<ul />').data({'role': 'listview', 'inset': 'true'}).attr('id', 'showstopcontent');
+
             for(i in data.services){
                 var service = data.services[i];
-                var tr = $('<tr />');
-                var serviceName = $('<td />').text(service.service_name);
-                var serviceTime = $('<td />');
-                var serviceDestination = $('<td />');
+                var serviceHeader = $('<li />').data({'role': 'list-divider'}).text(service.service_name);
+                serviceHeader.append($('<span />').addClass('ui-li-count').text('' + service.times.length));
+                container.append(serviceHeader);
+
                 if(service.times){
-                    serviceDestination.text(service.times[0].destination);
-                    serviceTime.text(service.times[0].mins + ' mins');
+                    for(x in service.times){
+
+                        var row = $('<li />');
+                        $('<h2 />').text(service.times[x].destination).appendTo(row);
+
+                        var right = $('<div />').addClass('ui-li-aside');
+                        $('<p />').text(service.times[x].time).appendTo(right);
+                        $('<p />').text(service.times[x].mins + ' mins').appendTo(right);
+
+                        right.appendTo(row);
+                        container.append(row);
+                    }
                 }
-                tr.append(serviceName);
-                tr.append(serviceDestination);
-                tr.append(serviceTime);
-                table.append(tr);
+
             }
+            container.appendTo('.wrapper').listview();
 
     },
     displayError: function(text){
@@ -39,7 +47,7 @@ app.showstop = {
         $('#favstops .error').text('');
     },
     clearTable: function(){
-        $('#favstops_table tbody').empty();
+        $('#showstopcontent').remove();
     }
 }
 
