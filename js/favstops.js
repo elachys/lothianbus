@@ -34,16 +34,17 @@ app.favstops = {
     },
     showFavStops: function(){
         var stops = app.favstops.getStopsFromStorage();
+        var container = $('<ul />').data({'role': 'listview', 'inset': 'true'}).attr('id', 'showfavcontent');
+
         for(i in stops){
-            var tr = $('<tr />');
-            var td = $('<td />').text(stops[i]);
-            var btn = $('<a href="showstop.html?code='+ i + '" data-role="button" data-iconpos="notext" data-icon="arrow-r">go</a>').button();
-            var td2 = $('<td />');
-            btn.appendTo(td2);
-            tr.append(td);
-            tr.append(td2);
-            $('.favorite_stops tbody').append(tr);
+            var row = $('<li />');
+            $('<a />').attr('href', 'showstop.html?code='+ i).data({
+                'inline': 'true'}).text(stops[i]).appendTo(row);
+
+            container.append(row);
         }
+        container.appendTo('.wrapper').listview();
+        
     },
     displayError: function(text){
         $('#favstops .error').text(text);
@@ -52,7 +53,7 @@ app.favstops = {
         $('#favstops .error').text('');
     },
     clearTable: function(){
-        $('#favstops_table tbody').empty();
+        $('.wrapper').empty();
     }
 }
 

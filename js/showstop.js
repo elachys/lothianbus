@@ -10,11 +10,18 @@ app.showstop = {
     fillLiveBuses: function(data){
             var data = app.removePipes(data);
             if(!data){
-                app.livebustimes.displayError('invalid stop code');
+                app.showstop.displayError('invalid stop code');
                 return false;
             }
             var container = $('<ul />').data({'role': 'listview', 'inset': 'true'}).attr('id', 'showstopcontent');
-
+            if(!data.services){
+                app.showstop.displayError('Unfortunately, no buses are running to this stop');
+                return;
+            }
+            if(data.services.service_name){
+                var service = data.services;
+                data.services = [service];
+            }
             for(i in data.services){
                 var service = data.services[i];
                 var serviceHeader = $('<li />').data({'role': 'list-divider'}).text(service.service_name);
@@ -41,13 +48,10 @@ app.showstop = {
 
     },
     displayError: function(text){
-        $('#favstops .error').text(text);
+        $('#showstop .error').text(text);
     },
     clearError: function(){
-        $('#favstops .error').text('');
-    },
-    clearTable: function(){
-        $('#showstopcontent').remove();
+        $('#showstop .error').text('');
     }
 }
 
