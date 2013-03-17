@@ -3,6 +3,10 @@ app.maputils = {
         $(selector).height(($(document).height() - $(selector).position().top));
         return $(selector).gmap({'center': user.lat + ',' + user.lng,'zoom': 17});
     },
+    centerTo: function (map, lat, lng){
+        var center = new google.maps.LatLng(lat, lng);
+        $(map).gmap('get','map').setOptions({'center':center});
+    },
     addGpsMarker: function(selector){
         var centerPosition = new google.maps.LatLng(user.lat, user.lng);
 
@@ -82,6 +86,59 @@ app.maputils = {
 
             $(selector).gmap('openInfoWindow', { 'content': app.maputils.stopInfoWindow(data).prop('outerHTML') }, this);
         });
+    },
+    autocomplete: function(ui){
+
+        console.log(ui);
     }
 
 };
+
+
+
+( function($) {
+
+    $.extend($.ui.gmap.prototype, {
+        /**
+         * Autocomplete using Google Geocoder
+         * @param panel:string/node/jquery
+         * @param callback:function(ui) called whenever something is selected
+         */
+        autocomplete: function(panel, callback) {
+            var self = this;
+            $(this._unwrap(panel)).autocomplete({
+                messages: {
+                    results: function(){ return ''; }
+                },
+                appendTo: $(panel).closest('form'),
+                source: function( request, response ) {
+                    self.search({
+                        'address':request.term + ', edinburgh',
+                        'region': 'gb' 
+                }, function(results, status) {
+                        if ( status === 'OK' ) {
+                            results = results.slice(0,3);
+                            response( $.map( results, function(item) {
+                                return { label: item.formatted_address, value: item.formatted_address, position: item.geometry.location }
+                            }));
+                        }
+                    });
+                },
+                minLength: 4,
+                select: function(event, ui) { 
+                    self._call(callback, ui);
+                },
+                open: function() {
+                    $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top");
+                    $('.ui-autocomplete, .autocomplete').removeClass('ui-autoocomplete ui-front ui-menu ui-widget ui-widget-content').addClass('autocomplete').data({
+                        'role': 'listview',
+                        'inset': 'true'
+                    }).listview().listview('refresh').css('left','0'); },
+                close: function() { $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+                 }
+            });
+        }
+
+    });
+
+} (jQuery) );
